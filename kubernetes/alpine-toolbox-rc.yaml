@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: alpine-toolbox
+  labels:
+    name: alpine-toolbox
+spec:
+  replicas: 1
+  selector:
+    name: alpine-toolbox
+  template:
+    metadata:
+      labels:
+        name: alpine-toolbox
+    spec:
+      containers:
+      - name: alpine-toolbox
+        image: quay.io/stefancocora/alpine-toolbox:v0.0.1
+        imagePullPolicy: Always
+        resources:
+         limits:
+          memory: "100Mi"
+          cpu: 100m
+         requests:
+          memory: "50Mi"
+          cpu: 50m
+        command:
+          - sleep
+          - "7200"
