@@ -1,5 +1,7 @@
 # alpine-toolbox
 
+[![Docker Repository on Quay](https://quay.io/repository/stefancocora/alpine-toolbox/status "Docker Repository on Quay")](https://quay.io/repository/stefancocora/alpine-toolbox)
+
 Alpine based toolbox container that comes preinstalled with various utilities.
 
 This container should be ran in interactive mode most of the time.
