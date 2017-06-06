@@ -16,7 +16,7 @@ function usage() {
 function build() {
   LOCAL_VERSION=$1
   echo "will build version: ${LOCAL_VERSION}"
-  docker build -t stefancocora/alpine-toolbox:${LOCAL_VERSION} .
+  docker build --no-cache -t stefancocora/alpine-toolbox:${LOCAL_VERSION} .
 }
 
 case ${VERSION} in
