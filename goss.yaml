@@ -1,0 +1,13 @@
+package:
+  bash:
+    installed: true
+  bind-tools:
+    installed: true
+  curl:
+    installed: true
+  ngrep:
+    installed: true
+  nmap-nping:
+    installed: true
+  tcptraceroute:
+    installed: true
