@@ -1,0 +1,751 @@
+jobs:
+- name: apply_product_management
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    trigger: true
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "apply_product_enactor"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: enactor_management
+      on_failure: *notify
+    - task: "apply_product_rfid"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: rfid_management
+      on_failure: *notify
+    - task: "apply_product_order"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: order_management
+      on_failure: *notify
+    - task: "apply_product_product"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: product_management
+      on_failure: *notify
+    - task: "apply_product_payment"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: payment_management
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_partner"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: partner_management
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_cloudops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: cloudops_management
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_dataops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: dataops_management
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_web"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: web_management
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_platform"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: platform_management
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+- name: apply_product_dev
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    trigger: true
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "apply_product_enactor"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: enactor_dev
+      on_failure: *notify
+    - task: "apply_product_rfid"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: rfid_dev
+      on_failure: *notify
+    - task: "apply_product_order"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: order_dev
+      on_failure: *notify
+    - task: "apply_product_product"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: product_dev
+      on_failure: *notify
+    - task: "apply_product_payment"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: payment_dev
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_partner"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: partner_dev
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_cloudops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: cloudops_dev
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_dataops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: dataops_dev
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_web"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: web_dev
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_platform"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: platform_dev
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_shared"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: shared_dev
+      on_failure: *notify
+- name: apply_product_sit
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    trigger: true
+    passed: ["apply_product_dev"]
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "apply_product_enactor"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: enactor_sit
+      on_failure: *notify
+- name: apply_product_staging
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    trigger: true
+    passed: ["apply_product_sit"]
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "apply_product_enactor"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: enactor_staging
+      on_failure: *notify
+    - task: "apply_product_rfid"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: rfid_staging
+      on_failure: *notify
+    - task: "apply_product_order"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: order_staging
+      on_failure: *notify
+    - task: "apply_product_product"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: product_staging
+      on_failure: *notify
+    - task: "apply_product_payment"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: payment_staging
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_partner"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: partner_staging
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_cloudops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: cloudops_staging
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_dataops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: dataops_staging
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_web"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: web_staging
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_platform"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: platform_staging
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+- name: plan_product_prod
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    trigger: true
+    passed: ["apply_product_staging"]
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "plan_product_enactor"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: enactor_prod
+      on_failure: *notify
+    - task: "plan_product_enactor2"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: enactor_prod2
+      on_failure: *notify
+    - task: "plan_product_rfid"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: rfid_prod
+      on_failure: *notify
+    - task: "plan_product_order"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: order_prod
+      on_failure: *notify
+    - task: "plan_product_product"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: product_prod
+      on_failure: *notify
+    - task: "plan_product_payment"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: payment_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_product_partner"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: partner_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_product_cloudops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: cloudops_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_product_dataops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: dataops_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_product_web"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: web_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_product_platform"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: platform_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_product_styleman"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: styleman_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "plan_shared"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_PROVIDER_DIR: shared_prod
+      on_failure: *notify
+- name: apply_product_prod
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    passed: ["plan_product_prod"]
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "apply_product_enactor"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: enactor_prod
+      on_failure: *notify
+    - task: "apply_product_enactor2"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: enactor_prod2
+      on_failure: *notify
+    - task: "apply_product_rfid"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: rfid_prod
+      on_failure: *notify
+    - task: "apply_product_order"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: order_prod
+      on_failure: *notify
+    - task: "apply_product_partner"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: partner_prod
+      on_failure: *notify
+    - task: "apply_product_product"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: product_prod
+      on_failure: *notify
+    - task: "apply_product_payment"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: payment_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_cloudops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: cloudops_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_dataops"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: dataops_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_web"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: web_prod
+        TF_VAR_pagerduty_tf_token_ci: ((pagerduty_tf_token_ci))
+      on_failure: *notify
+    - task: "apply_product_platform"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: platform_prod
+      on_failure: *notify
+    - task: "apply_product_styleman"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: styleman_prod
+      on_failure: *notify
+    - task: "apply_shared"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: shared_prod
+      on_failure: *notify
+- name: apply_non_product
+  serial: true
+  public: true
+  plan:
+  - get: "git_repo_core-infrastructure-terraform"
+    trigger: true
+  - get: "terraform_docker_image"
+  - aggregate:
+    - task: "apply_test"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: test
+      on_failure: *notify
+    - task: "apply_root"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: root
+      on_failure: *notify
+    - task: "apply_pocs"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: pocs
+      on_failure: *notify
+    - task: "apply_management"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: management
+      on_failure: *notify
+    - task: "apply_iam"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: iam
+      on_failure: *notify
+    - task: "apply_monitoring"
+      image: "terraform_docker_image"
+      file: git_repo_core-infrastructure-terraform/ci/task_config.yml
+      params:
+        GITHUB_PRIVATE_KEY: ((github_private_key))
+        AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+        RI_TERRAFORM_ACTION: apply -input=false -auto-approve
+        RI_PROVIDER_DIR: monitoring
+      on_failure: *notify
+
+resources:
+- name: "terraform_docker_image"
+  type: docker-image
+  source:
+    repository: "hashicorp/terraform"
+    tag: "0.11.7"
+
+- name: "git_repo_core-infrastructure-terraform"
+  type: "git"
+  source:
+    uri: "git@github.com:River-Island/core-infrastructure-terraform.git"
+    branch: "master"
+    private_key: ((github_private_key))
+- name: slack-message
+  type: slack-notification
+  source:
+    url: ((slack_webhook_msops_chan))
+
+resource_types:
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+notify: &notify
+  put: slack-message
+  params:
+    channel:
+      - 'ms-ops'
+      - '#terraform-prs'
+    text: |
+      :tada: Something in the build has failed. Check it out at:
+      http://management-concourse.prod.transit.ri-tech.io/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME

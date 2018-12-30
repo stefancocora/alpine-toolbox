@@ -1,0 +1,94 @@
+resource_types:
+- name: pull-request
+  type: docker-image
+  source:
+    repository: teliaoss/github-pr-resource
+- name: file-url
+  type: docker-image
+  source:
+    repository: pivotalservices/concourse-curl-resource
+    tag: latest
+
+resources:
+- name: git-alpine_toolbox
+  type: pull-request
+  check_every: 1m
+  source:
+    repository: stefancocora/alpine-toolbox
+    access_token: ((github-access-token))
+- name: goss_binary
+  type: file-url
+  source:
+    url: https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64
+    filename: goss
+- name: img-quay-alpine-toolbox
+  type: docker-image
+  source:
+    repository: quay.io/stefancocora/alpine-toolbox
+    tag: rc
+    # tag: v0.0.5
+    username: ((alpine_toolbox_user))
+    password: ((alpine_toolbox_pass))
+
+
+jobs:
+- name: build-img
+  public: true
+  plan:
+  - get: git-alpine_toolbox
+    trigger: true
+    version: every
+  - aggregate:
+    - put: img-quay-alpine-toolbox
+      params:
+        build: git-alpine_toolbox
+    on_failure:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: failure
+        context: "build-img"
+    on_success:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: success
+        context: "build-img"
+- name: test-img
+  public: true
+  plan:
+  - aggregate:
+    - get: git-alpine_toolbox
+    - get: img-quay-alpine-toolbox
+      trigger: true
+      passed: [build-img]
+    - get: goss_binary
+  - task: test-ctr-img
+    image: img-quay-alpine-toolbox
+    config:
+      platform: linux
+      inputs:
+      - name: git-alpine_toolbox
+      - name: goss_binary
+      params:
+        CI: true
+        ALPINE_TOOLBOX_USER: ((alpine_toolbox_user))
+      run:
+        path: sh
+        args:
+          - "-ec"
+          - |
+            chmod 755 goss_binary/goss
+            ./goss_binary/goss -g git-alpine_toolbox/goss.yaml validate -f documentation
+    on_failure:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: failure
+        context: "test-img"
+    on_success:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: success
+        context: "test-img"
