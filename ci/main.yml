@@ -1,16 +1,10 @@
-resource_types:
-- name: pull-request
-  type: docker-image
-  source:
-    repository: teliaoss/github-pr-resource
-
 resources:
 - name: git-alpine_toolbox
-  type: pull-request
-  check_every: 1m
+  type: git
   source:
-    repository: stefancocora/alpine-toolbox
-    access_token: ((github-access-token))
+    uri: https://github.com/stefancocora/alpine-toolbox.git
+    branch: master
+    disable_ci_skip: true
 - name: img-quay-alpine-toolbox
   type: docker-image
   source:
