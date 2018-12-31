@@ -50,7 +50,7 @@ jobs:
   - get: git-alpine_toolbox
     trigger: true
     version: every
-    passed: [gen-pkgs-log]
+    passed: [build-img]
   - aggregate:
     - put: img-quay-alpine-toolbox
       params:
