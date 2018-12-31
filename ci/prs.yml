@@ -26,7 +26,6 @@ resources:
   source:
     repository: quay.io/stefancocora/alpine-toolbox
     tag: rc
-    # tag: v0.0.5
     username: ((alpine_toolbox_user))
     password: ((alpine_toolbox_pass))
 
@@ -92,3 +91,62 @@ jobs:
         path: git-alpine_toolbox
         status: success
         context: "test-img"
+- name: gen-pkgs-log
+  public: true
+  plan:
+  - aggregate:
+    - get: git-alpine_toolbox
+    - get: img-quay-alpine-toolbox
+      trigger: true
+      passed: [test-img]
+  - task: gen-pkgs-log
+    image: img-quay-alpine-toolbox
+    config:
+      platform: linux
+      inputs:
+      - name: git-alpine_toolbox
+      params:
+        CI: true
+        ALPINE_TOOLBOX_USER: ((alpine_toolbox_user))
+      run:
+        path: sh
+        args:
+          - "-ec"
+          - |
+            apk info -v > packages.log
+            cat packages.log
+    on_failure:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: failure
+        context: "gen-pkgs-log"
+    on_success:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: success
+        context: "gen-pkgs-log"
+- name: publish-img
+  public: true
+  plan:
+  - get: git-alpine_toolbox
+    trigger: true
+    version: every
+    passed: [gen-pkgs-log]
+  - aggregate:
+    - put: img-quay-alpine-toolbox
+      params:
+        build: git-alpine_toolbox
+    on_failure:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: failure
+        context: "publish-img"
+    on_success:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: success
+        context: "publish-img"
