@@ -16,7 +16,7 @@ resources:
   source:
     repository: quay.io/stefancocora/alpine-toolbox
     tag_file: VERSION
-    tag_as_latest:true
+    tag_as_latest: true
     username: ((alpine_toolbox_user))
     password: ((alpine_toolbox_pass))
 
