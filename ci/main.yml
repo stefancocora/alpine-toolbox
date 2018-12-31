@@ -1,3 +1,14 @@
+resource_types:
+# notify: &notify
+#   put: slack-message
+#   params:
+#     channel:
+#       - 'ms-ops'
+#       - '#terraform-prs'
+#     text: |
+#       :tada: Something in the build has failed. Check it out at:
+#       http://management-concourse.prod.transit.ri-tech.io/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+
 resources:
 - name: git-alpine_toolbox
   type: git
@@ -9,6 +20,7 @@ resources:
   type: docker-image
   source:
     repository: quay.io/stefancocora/alpine-toolbox
+    tag_prefix: v
     tag_file: git-alpine_toolbox/VERSION
     tag_as_latest: true
     username: ((alpine_toolbox_user))
@@ -26,18 +38,7 @@ jobs:
     - put: img-quay-alpine-toolbox
       params:
         build: git-alpine_toolbox
-    on_failure:
-      put: git-alpine_toolbox
-      params:
-        path: git-alpine_toolbox
-        status: failure
-        context: "build-img"
-    on_success:
-      put: git-alpine_toolbox
-      params:
-        path: git-alpine_toolbox
-        status: success
-        context: "build-img"
+    # on_failure: *notify
 - name: publish-img
   public: true
   plan:
@@ -49,15 +50,4 @@ jobs:
     - put: img-quay-alpine-toolbox
       params:
         build: git-alpine_toolbox
-    on_failure:
-      put: git-alpine_toolbox
-      params:
-        path: git-alpine_toolbox
-        status: failure
-        context: "publish-img"
-    on_success:
-      put: git-alpine_toolbox
-      params:
-        path: git-alpine_toolbox
-        status: success
-        context: "publish-img"
+    # on_failure: *notify
