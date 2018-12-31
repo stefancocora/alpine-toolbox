@@ -15,7 +15,7 @@ resources:
   type: docker-image
   source:
     repository: quay.io/stefancocora/alpine-toolbox
-    tag_file: VERSION
+    tag_file: git-alpine_toolbox/VERSION
     tag_as_latest: true
     username: ((alpine_toolbox_user))
     password: ((alpine_toolbox_pass))
