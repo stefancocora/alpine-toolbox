@@ -1,0 +1,63 @@
+resources:
+- name: git-alpine_toolbox
+  type: git
+  source:
+    uri: https://github.com/stefancocora/alpine-toolbox.git
+    branch: master
+    disable_ci_skip: true
+- name: img-quay-alpine-toolbox
+  type: docker-image
+  source:
+    repository: quay.io/stefancocora/alpine-toolbox
+    tag_file: git-alpine_toolbox/VERSION
+    tag_as_latest: true
+    username: ((alpine_toolbox_user))
+    password: ((alpine_toolbox_pass))
+
+
+jobs:
+- name: build-img
+  public: true
+  plan:
+  - get: git-alpine_toolbox
+    trigger: true
+    version: every
+  - aggregate:
+    - put: img-quay-alpine-toolbox
+      params:
+        build: git-alpine_toolbox
+    on_failure:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: failure
+        context: "build-img"
+    on_success:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: success
+        context: "build-img"
+- name: publish-img
+  public: true
+  plan:
+  - get: git-alpine_toolbox
+    trigger: true
+    version: every
+    passed: [build-img]
+  - aggregate:
+    - put: img-quay-alpine-toolbox
+      params:
+        build: git-alpine_toolbox
+    on_failure:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: failure
+        context: "publish-img"
+    on_success:
+      put: git-alpine_toolbox
+      params:
+        path: git-alpine_toolbox
+        status: success
+        context: "publish-img"

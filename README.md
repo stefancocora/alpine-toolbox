@@ -10,6 +10,7 @@ To launch it and keep it running on a cluster scheduler ( kubernetes for example
 
 See the kubernetes directory for an example rc.
 
+
 ## Build the image
 - use the build script setting the build version that you want. It defaults to 0.0.1
 ```bash
